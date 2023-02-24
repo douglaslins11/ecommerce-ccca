@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: ccca_postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  flyway:
+    image: flyway/flyway:latest-alpine
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    command: -url="jdbc:postgresql://postgres:5432/postgres" -user=root -password=root migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
