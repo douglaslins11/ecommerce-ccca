@@ -1,4 +1,4 @@
-package com.lins.ecommerceccca.model
+package com.lins.ecommerceccca
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -11,4 +11,8 @@ data class Product(
     val id: Long,
     val description: String,
     val price: Double,
+    val width: Double,
+    val height: Double,
+    val length: Double,
+    val weight: Double
 )

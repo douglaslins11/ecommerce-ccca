@@ -1,6 +1,5 @@
-package com.lins.ecommerceccca.repository
+package com.lins.ecommerceccca
 
-import com.lins.ecommerceccca.model.Product
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface ProductRepository : JpaRepository <Product, Long>

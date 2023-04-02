@@ -1,7 +1,7 @@
-package com.lins.ecommerceccca.service
+package com.lins.ecommerceccca
 
+import com.lins.ecommerceccca.CpfAlgorithm
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 

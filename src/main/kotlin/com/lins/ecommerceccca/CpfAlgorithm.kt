@@ -1,4 +1,4 @@
-package com.lins.ecommerceccca.service
+package com.lins.ecommerceccca
 
 object CpfAlgorithm  {
 
