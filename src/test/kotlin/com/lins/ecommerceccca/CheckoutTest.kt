@@ -154,4 +154,26 @@ class CheckoutTest {
         Assertions.assertEquals(40.0, output.total)
         Assertions.assertEquals(10.0, output.freight)
     }
+
+    @Test
+    fun `Deve criar um pedido com 1 produto em dólar`() {
+        val items = mutableListOf(
+            OrderDto(5L, 1)
+        )
+        val input = CreateOrderInput(
+            "515.089.870-84",
+            items
+        )
+        val output = checkout.execute(input)
+        Assertions.assertEquals(3000.0, output.total)
+    }
+
+    @Test
+    fun `Xpto`() {
+        //Given
+
+        //When
+
+        //Then
+    }
 }

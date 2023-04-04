@@ -14,5 +14,6 @@ data class Product(
     val width: Double,
     val height: Double,
     val length: Double,
-    val weight: Double
+    val weight: Double,
+    val currency: String
 )
