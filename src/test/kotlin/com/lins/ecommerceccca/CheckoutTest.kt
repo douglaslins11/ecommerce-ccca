@@ -1,5 +1,6 @@
 package com.lins.ecommerceccca
 
+import io.mockk.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,7 +12,8 @@ class CheckoutTest {
 
     @BeforeEach
     fun setUp() {
-        checkout = Checkout()
+        clearAllMocks()
+        checkout = Checkout(CurrencyGatewayHttp(), ProductRepositoryDatabase(), CouponRepositoryDatabase())
     }
 
     @Test
@@ -156,7 +158,67 @@ class CheckoutTest {
     }
 
     @Test
-    fun `Deve criar um pedido com 1 produto em dólar`() {
+    fun `Deve criar um pedido com 1 produto em dólar usando STUB`() {
+        val currencyGatewayHttp = mockk<CurrencyGatewayHttp>()
+        checkout = Checkout(currencyGatewayHttp, ProductRepositoryDatabase(), CouponRepositoryDatabase())
+        val items = mutableListOf(
+            OrderDto(5L, 1)
+        )
+        val input = CreateOrderInput(
+            "515.089.870-84",
+            items
+        )
+        every { currencyGatewayHttp.getCurrencies() } returns mapOf("USD" to 3.0)
+        val output = checkout.execute(input)
+        Assertions.assertEquals(3000.0, output.total)
+    }
+
+    @Test
+    fun `Deve criar um pedido com 3 produtos com cupom de desconto usando SPY`() {
+        val couponRepositorySpy = spyk<CouponRepositoryDatabase>()
+        val productRepositorySpy = spyk<ProductRepositoryDatabase>()
+        checkout = Checkout(CurrencyGatewayHttp(), productRepositorySpy, couponRepositorySpy)
+        val items = mutableListOf(
+            OrderDto(1L, 1),
+            OrderDto(2L, 1),
+            OrderDto(3L, 3)
+        )
+        val input = CreateOrderInput(
+            "515.089.870-84",
+            items,
+            "VALE20",
+        )
+        val output = checkout.execute(input)
+        Assertions.assertEquals(4872.0, output.total)
+        verify (exactly = 1) { couponRepositorySpy.getCoupon("VALE20") }
+        verify (exactly = 3) { productRepositorySpy.getProduct(any()) }
+    }
+
+    @Test
+    fun `Deve criar um pedido com 1 produto em dólar usando MOCK`() {
+        val currencyGatewayHttp = mockk<CurrencyGatewayHttp>()
+        checkout = Checkout(currencyGatewayHttp, ProductRepositoryDatabase(), CouponRepositoryDatabase())
+        val items = mutableListOf(
+            OrderDto(5L, 1)
+        )
+        val input = CreateOrderInput(
+            "515.089.870-84",
+            items
+        )
+        every { currencyGatewayHttp.getCurrencies() } returns mapOf("USD" to 3.0)
+        val output = checkout.execute(input)
+        Assertions.assertEquals(3000.0, output.total)
+        verify (exactly = 1) { currencyGatewayHttp.getCurrencies() }
+    }
+
+    @Test
+    fun `Deve criar um pedido com 1 produto em dólar usando FAKE`() {
+        val currencyGateway = object : CurrencyGateway {
+            override fun getCurrencies(): Map<String, Double> {
+                return mapOf("USD" to 3.0)
+            }
+        }
+        checkout = Checkout(currencyGateway, ProductRepositoryDatabase(), CouponRepositoryDatabase())
         val items = mutableListOf(
             OrderDto(5L, 1)
         )
@@ -166,14 +228,5 @@ class CheckoutTest {
         )
         val output = checkout.execute(input)
         Assertions.assertEquals(3000.0, output.total)
-    }
-
-    @Test
-    fun `Xpto`() {
-        //Given
-
-        //When
-
-        //Then
     }
 }

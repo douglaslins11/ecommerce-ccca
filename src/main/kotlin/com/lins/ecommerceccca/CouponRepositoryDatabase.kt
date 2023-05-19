@@ -5,9 +5,9 @@ import org.jdbi.v3.core.kotlin.KotlinMapperFactory
 import org.springframework.stereotype.Component
 
 @Component
-class CouponRepositoryDatabase {
+class CouponRepositoryDatabase : CouponRepository{
 
-    fun getCoupon (code: String) : Coupon{
+    override fun getCoupon (code: String) : Coupon {
         val jdbiHandle = Jdbi.create("jdbc:postgresql://localhost:5432/postgres", "root", "root").open()
         jdbiHandle.registerRowMapper(KotlinMapperFactory())
         val coupon = jdbiHandle.createQuery("select * from coupon where code = :code")

@@ -2,7 +2,9 @@ package com.lins.ecommerceccca
 
 import java.util.*
 
-object Cli {
+class Cli(
+    private val checkout: Checkout
+) {
 
     fun execute() {
         val input = CreateOrderInput("", mutableListOf())
@@ -18,7 +20,6 @@ object Cli {
             }
             if (command.startsWith("checkout")) {
                 try {
-                    val checkout = Checkout()
                     val output = checkout.execute(input)
                     println(output.toString())
                 } catch (e: Error){
@@ -30,5 +31,6 @@ object Cli {
 }
 
 fun main() {
-    Cli.execute()
+    val checkout = Checkout(CurrencyGatewayHttp(), ProductRepositoryDatabase(), CouponRepositoryDatabase())
+    Cli(checkout).execute()
 }

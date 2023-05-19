@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/checkout")
-class Api {
+class Api (private val checkout: Checkout){
 
     @PostMapping
     fun createOrder(@RequestBody orderInput: CreateOrderInput): ResponseEntity<CreateOrderOutput> {
         return try {
-            val checkout = Checkout()
             val output = checkout.execute(orderInput)
             ResponseEntity.ok(output)
         } catch (e: Error){

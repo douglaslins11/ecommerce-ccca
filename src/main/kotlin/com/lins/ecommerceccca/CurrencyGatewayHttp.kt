@@ -1,9 +1,11 @@
 package com.lins.ecommerceccca
 
-class CurrencyGatewayHttp {
+import org.springframework.stereotype.Component
 
-    fun getCurrencies(): Map<String, Double> {
-        val response = ApiCurrency.getCurrencies()
-        return response
+@Component
+class CurrencyGatewayHttp : CurrencyGateway{
+    override fun getCurrencies(): Map<String, Double> {
+        return ApiCurrency.getCurrencies()
     }
+
 }
