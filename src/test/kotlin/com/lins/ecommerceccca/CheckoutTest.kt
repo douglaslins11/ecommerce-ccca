@@ -218,14 +218,19 @@ class CheckoutTest {
                 return mapOf("USD" to 3.0)
             }
         }
-        checkout = Checkout(currencyGateway, ProductRepositoryDatabase(), CouponRepositoryDatabase())
+        val productRepository = object : ProductRepository {
+            override fun getProduct(idProduct: Long): Product {
+                return Product(6, "A", 1000.0, 100.0, 30.0, 10.0, 3.0, "USD")
+            }
+        }
         val items = mutableListOf(
-            OrderDto(5L, 1)
+            OrderDto(6L, 1)
         )
         val input = CreateOrderInput(
             "515.089.870-84",
             items
         )
+        checkout = Checkout(currencyGateway, productRepository, CouponRepositoryDatabase())
         val output = checkout.execute(input)
         Assertions.assertEquals(3000.0, output.total)
     }
